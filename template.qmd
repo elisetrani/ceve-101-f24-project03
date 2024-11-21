@@ -26,7 +26,7 @@ using RainwaterHarvesting         # <2>
 Next, we specify the path to the rainfall data file and read it in.
 
 ```{julia}
-filepath = "data/1.txt" # <1>   
+filepath = "data/25.txt" # <1>   
 rainfall_data = RainfallData(filepath) # <2>
 ```
 
@@ -50,54 +50,23 @@ plot(rainfall_data) # <1>
 
 ### Discussion
 
-*Insert discussion here*
+After cleaning, data from 48 were kept. This means that there are 48 years of valid data. Several years around 2011-2014 don’t contain any data due to the major drought from 2012-2017 in Ceará Brazil. The missing data during drought years could lead to an overestimation of water availability and how reliable our system is. My model could also be slightly inaccurate because it would be based on data from when there was sufficient rainfall each year, and this could lead to a model that isn’t equipped to deal with drought years. These are just some considerations I have to keep in mind. However, the available data is still sufficient for meaningful risk assessment because even without the years from the drought, there is enough data to make meaningful predictions.
 
 ## Understanding the Theoretical Model
 
-Let's explore the model that simulates the rainwater harvesting system.
+
 
 ### Mass Balance Equation
 
-The mass balance model for the rainwater tank is given by:
 
-$$
-V_{t+1} = V_t + Q_t - C_t | 0 \leq V_t \leq V_\text{max}
-$$
-
-- $V_t$: the volume of water in the tank at time $t$
-- $Q_t$ is the volume of water added to the tank at time $t$
-- $C_t$ is the volume of water consumed at time $t$
-- $V_\text{max}$: the maximum volume of the tank
 
 ### Inflow ($Q_t$)
 
-Inflow is calculated as
 
-$$
-Q_t = \eta \times A \times \max(P_t - F, 0).
-$$
-
-- $\eta$: the runoff coefficient, which accounts for losses due to evaporation, spilling, etc.
-- $A$: the area of the roof (we will use square meters)
-- $P_t$: the precipitation at time $t$ (we will use millimeters per day)
-- $F$: the first flush volume (we will use millimeters). The first flush volume is often discarded, so that each time it rains the first bit of water (which is usually dirty) is not used (see [here](https://rainwaterharvesting.tamu.edu/pre-storage-treatment/) for more details).
 
 ### Consumption
 
-Consumption is modeled as:
 
-$$
-C_t = \begin{cases}
-    74.1 & \quad \text{day of year} > 150 \\
-    0 & \quad \text{day of year} \leq 150
-\end{cases}
-$$
-
-This makes two major assumptiuons.
-First, the household begins using water from the tank after the 150th day of the year.
-This is based on the idea that the rainy season lasts for about the first 150 days of the year, and so they may have other sources of water before then.
-The second assumption is that each household consumes 74.1 liters per day during the dry season.
-How does this compare to your household's water usage?
 
 ## Model Implementation and Testing
 
