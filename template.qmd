@@ -54,19 +54,59 @@ After cleaning, data from 48 were kept. This means that there are 48 years of va
 
 ## Understanding the Theoretical Model
 
-
+Let's explore the model that simulates the rainwater harvesting system.
 
 ### Mass Balance Equation
 
+The mass balance model for the rainwater tank is given by:
 
+$$
+V_{t+1} = V_t + Q_t - C_t - E_0 | 0 \leq V_t \leq V_\text{max}
+$$
+
+This equation is a very simplified version of the water levels and has some limiting assumptions and approximatinos. It doensn't take into account the evaporation that happens in the tank since it only calculates the volume of water added minus the volume of water consumed. This equation makes the assumption that there is no evaporation, which we know is not true. Evaporation is an important factor that need to be taken into account when calculating how much available water there will be. This equation also makes the assumtion that the material of the tank doesn't absorb any water, and the tank doesn't leak any water. For now, we'll focus on modifying the equation to take evaporation into account since we are not 100% sure there was any leakage or absorption.
+To do this, we'll use the Penman formula:
+
+$$
+E_0=(700T_m/(100-A)+15(T-T_d))/80-T
+$$
+
+- $E_0$: is the evaporation rate
+- $T_m$: T+0.006h, and h is the elevation in meters
+- $T$ is the mean temperature
+- $A$ is the latitude (degrees)
+- $T_d$ is the mean dew-point
+- Now that evaporation is added to the model, better estimates of how much water is actually in the tank at a given time can be made.
 
 ### Inflow ($Q_t$)
 
+Inflow is calculated as
 
+$$
+Q_t = \eta \times A \times \max(P_t - F, 0).
+$$
+
+- $\eta$: the runoff coefficient, which accounts for losses due to evaporation, spilling, etc.
+- $A$: the area of the roof (we will use square meters)
+- $P_t$: the precipitation at time $t$ (we will use millimeters per day)
+- $F$: the first flush volume (we will use millimeters). The first flush volume is often discarded, so that each time it rains the first bit of water (which is usually dirty) is not used (see [here](https://rainwaterharvesting.tamu.edu/pre-storage-treatment/) for more details).
 
 ### Consumption
 
+Consumption is modeled as:
 
+$$
+C_t = \begin{cases}
+    74.1 & \quad \text{day of year} > 150 \\
+    0 & \quad \text{day of year} \leq 150
+\end{cases}
+$$
+
+This makes two major assumptiuons.
+First, the household begins using water from the tank after the 150th day of the year.
+This is based on the idea that the rainy season lasts for about the first 150 days of the year, and so they may have other sources of water before then.
+The second assumption is that each household consumes 74.1 liters per day during the dry season.
+How does this compare to your household's water usage?
 
 ## Model Implementation and Testing
 
