@@ -64,7 +64,7 @@ $$
 V_{t+1} = V_t + Q_t - C_t - E_0 | 0 \leq V_t \leq V_\text{max}
 $$
 
-This equation is a very simplified version of the water levels and has some limiting assumptions and approximatinos. It doensn't take into account the evaporation that happens in the tank since it only calculates the volume of water added minus the volume of water consumed. This equation makes the assumption that there is no evaporation, which we know is not true. Evaporation is an important factor that need to be taken into account when calculating how much available water there will be. This equation also makes the assumtion that the material of the tank doesn't absorb any water, and the tank doesn't leak any water. For now, we'll focus on modifying the equation to take evaporation into account since we are not 100% sure there was any leakage or absorption.
+This equation is a very simplified version of the water levels and has some limiting assumptions and approximatinos. It doensn't take into account the evaporation that happens in the tank since it only calculates the volume of water added minus the volume of water consumed. This equation makes the assumption that there is no evaporation, which we know is not true. Evaporation is an important factor that need to be taken into account when calculating how much available water there will be. This equation also makes the assumtion that the material of the tank doesn't absorb any water, and the tank doesn't leak any water. For now, we'll focus on modifying the equation to take evaporation into account since we are not 100% sure there was any leakage or absorption. I would add the Penman formula, which estimates evaporation rates of water based on several key factors.
 To do this, we'll use the Penman formula:
 
 $$
@@ -86,11 +86,6 @@ $$
 Q_t = \eta \times A \times \max(P_t - F, 0).
 $$
 
-- $\eta$: the runoff coefficient, which accounts for losses due to evaporation, spilling, etc.
-- $A$: the area of the roof (we will use square meters)
-- $P_t$: the precipitation at time $t$ (we will use millimeters per day)
-- $F$: the first flush volume (we will use millimeters). The first flush volume is often discarded, so that each time it rains the first bit of water (which is usually dirty) is not used (see [here](https://rainwaterharvesting.tamu.edu/pre-storage-treatment/) for more details).
-
 ### Consumption
 
 Consumption is modeled as:
@@ -101,12 +96,6 @@ C_t = \begin{cases}
     0 & \quad \text{day of year} \leq 150
 \end{cases}
 $$
-
-This makes two major assumptiuons.
-First, the household begins using water from the tank after the 150th day of the year.
-This is based on the idea that the rainy season lasts for about the first 150 days of the year, and so they may have other sources of water before then.
-The second assumption is that each household consumes 74.1 liters per day during the dry season.
-How does this compare to your household's water usage?
 
 ## Model Implementation and Testing
 
@@ -119,9 +108,9 @@ You will have the opportunity to change these values later.
 #| output: false
 param = ModelParameters(          # <1>
     runoff_coefficient=0.85,      # <2>
-    roof_area_m2=45.0,            # <3>
+    roof_area_m2=80.0,            # <3>
     first_flush_mm=2.0,           # <4>
-    tank_capacity_L=16000.0       # <5>
+    tank_capacity_L=18000.0       # <5>
 )
 ```
 
@@ -153,7 +142,7 @@ plot(p2, p1, layout=(2, 1), size=(1000, 700), link=:x)
 ```
 
 Observe how the tank's water level responds to rainfall events.
-Note any periods when the tank runs dry or overflows.
+Note any periods when the tank runs dry or overflows. I increased the roof area and tank capacity. I noticed that once the tank was full (around 1981-01-01), no matter how I changed roof area or capacity of the tank, the amount of water in the second half of the year didn't change very much. This is 
 
 ### Reliability Analysis
 
