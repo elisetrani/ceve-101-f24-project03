@@ -141,8 +141,7 @@ p2 = plot(rainfall_1981)
 plot(p2, p1, layout=(2, 1), size=(1000, 700), link=:x)
 ```
 
-Observe how the tank's water level responds to rainfall events.
-Note any periods when the tank runs dry or overflows. I increased the roof area and tank capacity. I noticed that once the tank was full (around 1981-01-01), no matter how I changed roof area or capacity of the tank, the amount of water in the second half of the year didn't change very much. This is 
+I increased the roof area and tank capacity. First, increasing the roof area helped with keeping more water in the tank in at the start of the year when there wasn't much rainfall. The only point in 1981 where there wansn't water in the tank was at the beginning of the year, but this was due to an uncontrollable factor, lack of rainfall. I increased tank volume to help retain water from the increase in roof area, plus it helps keep water levels from becoming too low in the second half of the year where rainfall is more sparce. These changes will increase they system's reliability, and it will decrease the number of years with failures.
 
 ### Reliability Analysis
 
@@ -160,3 +159,7 @@ println("Number of years with failures: ", sum(any_failures), " out of ", length
 2. We run the simulation for each year.
 3. We check if any failures occurred.
 4. We print the number of years with failures and the total number of years.
+Since 3 out of 48 years had failures, the system's reliability percentage is 93.75%. This is a very high percentage, meaning it is unlikely the system will fail/the system is trustworthy.
+
+## Limitations
+A current limitation of this model is the graph of the data for tank volume and rainfall. It looks as though there are vertical lines in the graph, when these are actually rapid spikes in the amount of water in the tank. This could be quite confusing to some people, so one way to adress this could be by adding a notice near the graph that explains these areas are actually rapid increases. This would enhance the analysis by making the graph clear and easy to read/interpret.
