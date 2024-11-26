@@ -11,7 +11,6 @@ format:
 ---
 
 
-We begin by loading the required packages.
 
 ```{julia}
 using Revise                      # <1>
@@ -23,7 +22,7 @@ using RainwaterHarvesting         # <2>
 
 ### Setting the file path
 
-Next, we specify the path to the rainfall data file and read it in.
+Station 25
 
 ```{julia}
 filepath = "data/25.txt" # <1>   
@@ -33,14 +32,8 @@ rainfall_data = RainfallData(filepath) # <2>
 1. This is the path to the rainfall data file for the station of interest.
 2. This creates a `RainfallData` object containing the rainfall data for the specified station.
 
-If we dig under the hood a bit, we can see that there are two main pieces of information:
-
-- `station_info`: a dictionary containing information about the station, such as its name and location.
-- `annual_data`: a dictionary mapping years to `AnnualRainfallData` objects, each containing the date and precipitation data for a given year.
 
 ### Plotting the Data
-
-We can plot the data for one or all of the years to verify that it looks correct.
 
 ```{julia}
 plot(rainfall_data) # <1>
@@ -50,7 +43,7 @@ plot(rainfall_data) # <1>
 
 ### Discussion
 
-After cleaning, data from 48 were kept. This means that there are 48 years of valid data. Several years around 2011-2014 don’t contain any data due to the major drought from 2012-2017 in Ceará Brazil. The missing data during drought years could lead to an overestimation of water availability and how reliable our system is. My model could also be slightly inaccurate because it would be based on data from when there was sufficient rainfall each year, and this could lead to a model that isn’t equipped to deal with drought years. These are just some considerations I have to keep in mind. However, the available data is still sufficient for meaningful risk assessment because even without the years from the drought, there is enough data to make meaningful predictions.
+After cleaning, data from 48 years were kept. This means that there are 48 years of valid data. Several years around 2011-2014 don’t contain any data due to the major drought from 2012-2017 in Ceará Brazil. The missing data during drought years could lead to an overestimation of water availability and how reliable our system is. My model could also be slightly inaccurate because it would be based on data from when there was sufficient rainfall each year, and this could lead to a model that isn’t equipped to deal with drought years. These are just some considerations I have to keep in mind. However, the available data is still sufficient for meaningful risk assessment because even without the years from the drought, there is enough data to make meaningful predictions.
 
 ## Understanding the Theoretical Model
 
@@ -102,7 +95,6 @@ $$
 ### Defining the Model Parameters
 
 We can define the model parameters with sensible default values.
-You will have the opportunity to change these values later.
 
 ```{julia}
 #| output: false
@@ -141,12 +133,11 @@ p2 = plot(rainfall_1981)
 plot(p2, p1, layout=(2, 1), size=(1000, 700), link=:x)
 ```
 
-I increased the roof area and tank capacity. First, increasing the roof area helped with keeping more water in the tank in at the start of the year when there wasn't much rainfall. The only point in 1981 where there wansn't water in the tank was at the beginning of the year, but this was due to an uncontrollable factor, lack of rainfall. I increased tank volume to help retain water from the increase in roof area, plus it helps keep water levels from becoming too low in the second half of the year where rainfall is more sparce. These changes will increase they system's reliability, and it will decrease the number of years with failures.
+I increased the roof area and tank capacity. First, increasing the roof area helped with keeping more water in the tank in at the start of the year when there wasn't much rainfall. The only point in 1981 where there wansn't water in the tank was at the beginning of the year, but this was due to an uncontrollable factor: lack of rainfall. I increased tank volume to help retain water from the increase in roof area, plus it helps keep water levels from becoming too low in the second half of the year where rainfall is more sparce. These changes will increase they system's reliability, and it will decrease the number of years with failures.
 
 ### Reliability Analysis
 
-We can run simulations for all years, one at a time, and then check how many times the tank runs dry.
-You can run simulations for all years at once with the following code:
+We can run simulations for all years, one at a time, and then check how many times the tank runs dry. Since 3 out of 48 years had failures, the system's reliability percentage is 93.75%. This is a very high percentage, meaning it is unlikely the system will fail/the system is trustworthy.
 
 ```{julia}
 all_years = sort(collect(keys(rainfall_data.annual_data)))          # <1>
@@ -159,7 +150,6 @@ println("Number of years with failures: ", sum(any_failures), " out of ", length
 2. We run the simulation for each year.
 3. We check if any failures occurred.
 4. We print the number of years with failures and the total number of years.
-Since 3 out of 48 years had failures, the system's reliability percentage is 93.75%. This is a very high percentage, meaning it is unlikely the system will fail/the system is trustworthy.
 
 ## Limitations
 A current limitation of this model is the graph of the data for tank volume and rainfall. It looks as though there are vertical lines in the graph, when these are actually rapid spikes in the amount of water in the tank. This could be quite confusing to some people, so one way to adress this could be by adding a notice near the graph that explains these areas are actually rapid increases. This would enhance the analysis by making the graph clear and easy to read/interpret.
